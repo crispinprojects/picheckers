@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 //====================================================================
-// Pi Checkers version 0.1
+// Pi Checkers version 0.2
 // Author: Alan Crispin <crispinalan@gmail.com> 
 // Date: December 2024
 // use make file to compile
@@ -37,6 +37,21 @@ extern WINDOW  *info_win;
 //connected with the linker. An extern variable is used when a 
 //particular file needs to access a variable from another file.
 
+void clear_info_window()
+{
+	mvwprintw(info_win, 2, 2, "                                        ");
+	mvwprintw(info_win, 3, 2, "                                        ");
+	mvwprintw(info_win, 4, 2, "                                        ");
+	mvwprintw(info_win, 5, 2, "                                         ");
+	mvwprintw(info_win, 6, 2, "                                         ");
+	mvwprintw(info_win, 7, 2, "                                         ");
+	mvwprintw(info_win, 8, 2, "                                         ");
+	mvwprintw(info_win, 9, 2, "                                         ");
+	mvwprintw(info_win, 10, 2, "                                         ");
+	wrefresh(info_win);
+}
+
+
 int main(int argc, char **argv)
 {
 
@@ -52,19 +67,28 @@ int main(int argc, char **argv)
 	int ai_x2=0;
 	int ai_y2=0;
 	
-	int x=0;
+	int x=1;
 	int y=0;
-	
+	bool m_deep_search=FALSE;
 	bool m_first_press=TRUE;
 	int m_side =HUMAN;	
 	int ch=0;	
+	
+	int max_depth=8;
 
 	init_board(board);
 	init_all();
 	
-	make_info_win();
-	mvwprintw(info_win, 2, 2, "Pi Checkers: Human Move");
+	create_info_win();
+	mvwprintw(info_win, 2, 2, "Pi Checkers v0.2: Human To Move         ");
+	mvwprintw(info_win, 3, 2, "A key: AI move                          ");
+	mvwprintw(info_win, 4, 2, "D key: Deep Search                      ");
+	mvwprintw(info_win, 5, 2, "H key: Help                             ");
+	mvwprintw(info_win, 6, 2, "I key: Redraw INFO window               ");
+	mvwprintw(info_win, 7, 2, "R key: Restart Game                      ");
+	mvwprintw(info_win, 8, 2, "Spacebar: select piece                   ");
 	wrefresh(info_win);
+  
     
 	//gameloop
 	while(1){
@@ -88,40 +112,140 @@ int main(int argc, char **argv)
 			if(y-1 >= 0) y--;			
 		}
 		
+		else if(ch == 100){ //d key
+			 
+			 if(m_deep_search ==FALSE)
+			 {
+				 max_depth=14;
+				 m_deep_search=TRUE; //toggle
+			 }
+			 else {
+				  max_depth=8;
+				 m_deep_search=FALSE; //toggle				 
+			 }
+			 
+			clear_info_window();			
+			if(m_deep_search){	
+			mvwprintw(info_win, 2, 2, "DEEP SEARCH ACTIVATED: WAIT FOR AI");
+			mvwprintw(info_win, 3, 2, "SEARCH DEPTH: %d  ",max_depth);
+			if(m_side ==HUMAN) 
+			mvwprintw(info_win, 4, 2, "HUMAN TO MOVE                  ");
+			else mvwprintw(info_win, 4, 2, "AI TO MOVE (PRESS A KEY)       ");	
+		    } else
+		    {
+			mvwprintw(info_win, 2, 2, "DEEP SEARCH DEACTIVATED");
+			mvwprintw(info_win, 3, 2, "SEARCH DEPTH: %d  ",max_depth);
+			if(m_side ==HUMAN) 
+			mvwprintw(info_win, 4, 2, "HUMAN TO MOVE                  ");
+			else mvwprintw(info_win, 4, 2, "AI TO MOVE (PRESS A KEY)       ");
+			}
+			wrefresh(info_win);
+		}
+		
+		
+		else if(ch == 104){ //h key
+			
+			clear_info_window();
+			mvwprintw(info_win, 2, 2, "Help");
+			mvwprintw(info_win, 3, 2, "A key: AI move                          ");
+			mvwprintw(info_win, 4, 2, "D key: Deep Search                      ");
+			mvwprintw(info_win, 5, 2, "H key: Help                             ");
+			mvwprintw(info_win, 6, 2, "I key: Redraw INFO window               ");
+			mvwprintw(info_win, 7, 2, "R key: Restart Game                      ");
+			mvwprintw(info_win, 8, 2, "Spacebar: select piece                   ");
+			
+			if(m_side ==HUMAN) 
+			mvwprintw(info_win, 9, 2, "HUMAN TO MOVE                  ");
+			else mvwprintw(info_win, 9, 2, "AI TO MOVE (PRESS A KEY)       ");
+			
+			wrefresh(info_win);		
+		}
+		
 		else if(ch == 105){ //i key
 			//redraw info window
-			make_info_win();
-			mvwprintw(info_win, 2, 2, "Info Window Restarted");
+			create_info_win();
+			mvwprintw(info_win, 2, 2, "INFO WINDOW RESTARTED");
+			mvwprintw(info_win, 3, 2, "A key: AI move                          ");
+			mvwprintw(info_win, 4, 2, "D key: Deep Search                      ");
+			mvwprintw(info_win, 5, 2, "H key: Help                             ");
+			mvwprintw(info_win, 6, 2, "I key: Redraw INFO window               ");
+			mvwprintw(info_win, 7, 2, "R key: Restart Game                      ");
+			mvwprintw(info_win, 8, 2, "Spacebar: select piece                   ");
+						
+			if(m_side ==HUMAN) 
+			     mvwprintw(info_win, 9, 2, "HUMAN TO MOVE                  ");
+			else mvwprintw(info_win, 9, 2, "AI TO MOVE (PRESS A KEY)       ");
+			
 			wrefresh(info_win);		
+		}
+		
+		else if(ch == 114){ //r key
+		//restart game
+		clear_board(board);
+		init_board(board);	
+		max_depth=8;	
+		human_x1=0;
+		human_y1=0;
+		human_x2=0;
+		human_y2=0;		
+		ai_x1=0;
+		ai_y1=0;
+		ai_x2=0;
+		ai_y2=0;		
+		x=1;
+		y=0;
+		m_first_press=TRUE;	
+		m_side =HUMAN;
+		create_info_win();
+		mvwprintw(info_win, 2, 2, "GAME RESTARTED                 ");
+		mvwprintw(info_win, 3, 2, "A key: AI move                          ");
+		mvwprintw(info_win, 4, 2, "D key: Deep Search                      ");
+		mvwprintw(info_win, 5, 2, "H key: Help                             ");
+		mvwprintw(info_win, 6, 2, "I key: Redraw INFO window               ");
+		mvwprintw(info_win, 7, 2, "R key: Restart Game                      ");
+		mvwprintw(info_win, 8, 2, "Spacebar: select piece                   ");		
+		mvwprintw(info_win, 9, 2, "HUMAN TO MOVE                  ");
+		wrefresh(info_win);		
 		}
 		
 		else if(ch == 97){ //a key (lower case) AI PLAYER
 			
 			if(m_side ==AI) 
 			{
-			get_best_move_AI(board, 2, 4, &ai_x1, &ai_y1, &ai_x2, &ai_y2);
 			
+			get_best_move_AI(board, 2, max_depth, &ai_x1, &ai_y1, &ai_x2, &ai_y2);
+					
+			
+			if(!is_coord_valid(ai_x1,ai_y1) || !is_coord_valid(ai_x2,ai_y2)){
+				//AI returned non-valid move				
+				clear_info_window();	
+				mvwprintw(info_win, 2, 2, "BLACK AI MOVE: (%d,%d)->(%d,%d)    ",ai_x1,ai_y1,ai_x2,ai_y2);			
+				mvwprintw(info_win, 3, 2, "AI FAILED: SORRY GAME OVER.          ");
+				//mvwprintw(info_win, 4, 2, "AI FAILED: SORRY GAME OVER.          ");
+				wrefresh(info_win);	
+			}
 				
 			bool ai_second_cap=move_black(board, ai_x1, ai_y1, ai_x2, ai_y2);
 			refresh();
 			
 			if(is_black_win(board))
 			{
-			wrefresh(info_win);	
+			clear_info_window();
 			mvwprintw(info_win, 2, 2, "BLACK AI MOVE: (%d,%d)->(%d,%d)    ",ai_x1,ai_y1,ai_x2,ai_y2);			
 			mvwprintw(info_win, 3, 2, "AI (BLACK) WINS: GAME OVER.         ");
 			wrefresh(info_win);		
 			}
 			else {			
-			wrefresh(info_win);	
+			clear_info_window();
 			mvwprintw(info_win, 2, 2, "BLACK AI MOVE: (%d,%d)->(%d,%d)   ",ai_x1,ai_y1,ai_x2,ai_y2);			
 			mvwprintw(info_win, 3, 2, "HUMAN TO MOVE                     ");
+			//mvwprintw(info_win, 4, 2, "OPPONENT CAN CAPTURE: %d          ",opponent_can_capture(board,ai_x2,ai_y2));
 			wrefresh(info_win);	
 		    }
 			
 			if(ai_second_cap)
 			{
-			wrefresh(info_win);	
+			clear_info_window();
 			mvwprintw(info_win, 2, 2, "BLACK (AI) SECOND CAPTURE POSSIBLE");
 			mvwprintw(info_win, 3, 2, "PRESS A KEY AGAIN                   ");						
 			wrefresh(info_win);			
@@ -138,7 +262,7 @@ int main(int argc, char **argv)
 			human_y1=0; //y
 			human_x2=0;
 			human_y2=0;	
-			x=0;
+			x=1;
 			y=0;	
 			}
 		  }//m_side=AI						
@@ -166,13 +290,13 @@ int main(int argc, char **argv)
 		
 		if(is_white_win(board))
 		{
-		wrefresh(info_win);	
+		clear_info_window();
 		mvwprintw(info_win, 2, 2, "WHITE MOVE: (%d,%d)->(%d,%d)          ",human_x1,human_y1,human_x2,human_y2);		
 		mvwprintw(info_win, 3, 2, "HUMAN WINS. GAME OVER.        ");
 		wrefresh(info_win);
 		}
 		else {
-		wrefresh(info_win);	
+		clear_info_window();
 		mvwprintw(info_win, 2, 2, "WHITE MOVE: (%d,%d)->(%d,%d)          ",human_x1,human_y1,human_x2,human_y2);		
 		mvwprintw(info_win, 3, 2, "AI TO MOVE (PRESS A KEY)       ");
 		wrefresh(info_win);
@@ -182,7 +306,7 @@ int main(int argc, char **argv)
 
 		if(human_second_cap)
 		{
-		wrefresh(info_win);	
+		clear_info_window();
 		mvwprintw(info_win, 2, 2, "WHITE (HUMAN) SECOND CAPTURE POSSIBLE. ");
 		mvwprintw(info_win, 3, 2, "TAKE NEXT PIECE                        ");		
 		wrefresh(info_win);
@@ -201,14 +325,14 @@ int main(int argc, char **argv)
 		human_y1=0; //y
 		human_x2=0;
 		human_y2=0;	
-		x=0;
+		x=1;
 		y=0;
 		}//else WHITE second capture		
 	    }
 	    else
 	    {
 	    //white move not valid (start over)
-	    wrefresh(info_win);	
+	    clear_info_window();
 	    mvwprintw(info_win, 2, 2, "WHITE MOVE: (%d,%d)->(%d,%d)        ",human_x1,human_y1,human_x2,human_y2);
 		mvwprintw(info_win, 3, 2, "WHITE ILLEGAL MOVE. TRY AGAIN!                      ");	
 		wrefresh(info_win);
@@ -218,7 +342,7 @@ int main(int argc, char **argv)
 	    human_y1=0; //y
 	    human_x2=0;
 	    human_y2=0;
-	    x=0;
+	    x=1;
 	    y=0;
 		}
 	} //else if !firstclick and human

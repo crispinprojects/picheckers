@@ -28,7 +28,20 @@ WINDOW *info_win;
 #define PLAYER1 1
 #define PLAYER2 2
 
-int maxDepth=4;
+//int maxDepth=40;
+
+//======================================================================
+void clear_board(int board[][BOARD_SIZE])
+{	
+	for (int x=0;x<BOARD_SIZE;x++)
+	{
+	for (int y=0;y<BOARD_SIZE;y++)
+	{   
+	board[x][y] =0;
+	}
+	}
+}	
+
 //======================================================================
 void init_board(int board[][BOARD_SIZE]){
 		
@@ -73,10 +86,8 @@ void init_all(void){
     keypad(stdscr, TRUE); //call keypad to tell curses to interpret special keys
 	start_color(); //set up colours
 	//experimenting with colour pairs
-	init_pair(1, COLOR_BLACK, COLOR_WHITE);
-	//init_pair(2, COLOR_RED, COLOR_GREEN);
-	init_pair(2, COLOR_GREEN, COLOR_BLACK); //black with green crown
-	//init_pair(3, COLOR_GREEN, COLOR_RED);
+	init_pair(1, COLOR_BLACK, COLOR_WHITE);	
+	init_pair(2, COLOR_GREEN, COLOR_BLACK); //black with green crown	
 	init_pair(3, COLOR_RED, COLOR_GREEN);//green with red crown
 	init_pair(4, COLOR_MAGENTA, COLOR_BLUE);
 	init_pair(5, COLOR_CYAN, COLOR_YELLOW);
@@ -193,10 +204,11 @@ void wclrscr(WINDOW * pwin){
 
 //======================================================================
 
-void make_info_win()
+void create_info_win()
 {
-	//make information window	
-	info_win = newwin(12, 40, 4, 38);
+	//make information window
+	//newwin(height,width,start_y,start_x)	
+	info_win = newwin(12, 42, 4, 36);
 	wattrset(info_win, COLOR_PAIR(1));
 	wclrscr(info_win);
 	box(info_win, 0, 0);
@@ -989,50 +1001,6 @@ void copy_board(int src[BOARD_SIZE][BOARD_SIZE], int dest[BOARD_SIZE][BOARD_SIZE
 }
 //=========================================================================
 
-int evaluate_position(int board[BOARD_SIZE][BOARD_SIZE]) 
-{
-	int WMAN_num = 0, BMAN_num = 0;
-	int WKING_num = 0, BKING_num = 0;
-
-	int score = 0;
-	// count pieces and calculate score	
-		for (int x = 0; x < BOARD_SIZE; x++) {
-        for (int y = 0; y < BOARD_SIZE; y++) {
-			// score for standard pawn pieces
-			if (board[x][y] == BMAN) {
-				BMAN_num++;
-				score += 100;
-			} else if (board[x][y] == WMAN) {
-				WMAN_num++;
-				score -= 100;
-				// more score for king pieces
-			} else if (board[x][y] == BKING) {
-				BKING_num++;
-				score += 300;
-			} else if (board[x][y] == WKING) {
-				WKING_num++;
-				score -= 300;
-			}
-
-			// higher score for controlling the center of the board?
-			if (y >= 3 && y <= 4 && x >= 2 && x <= 5) {
-				if (board[x][y] == BMAN)
-					score += 50;
-				else if (board[x][y] == WMAN)
-					score -= 50;
-				else if (board[x][y] == BKING)
-					score += 100;
-				else if (board[x][y] == WKING)
-					score -= 100;
-			}
-		}
-	}
-	
-	score += 10 * (BMAN_num + BKING_num - WMAN_num - WKING_num);
-	
-	return score;
-}
-//======================================================================
 
 bool is_coord_valid(int x, int y)
 {
@@ -1115,7 +1083,7 @@ void get_best_move_AI(int board[BOARD_SIZE][BOARD_SIZE], int turn, int maxDepth,
 	copy_board(board, boardCopy);	
 	make_move(boardCopy, turn, currentx1, currenty1, currentx2, currenty2);
 	int score = minimax(boardCopy, maxDepth, 0, PLAYER1, -9999, 9999); //player 1
-	
+	//int score = minimax(boardCopy, maxDepth, 0, PLAYER2, -9999, 9999); //player 1
 	if (score > bestScore) {
 	bestScore = score;
 	bestMoveIndex = i;
@@ -1135,12 +1103,13 @@ int minimax(int board[BOARD_SIZE][BOARD_SIZE], int maxDepth, int depth, int turn
 {
 	// when max depth is reached, start evaluating the position
 	if (depth == maxDepth) {
-		return evaluate_position(board);
+		return evaluate_position(board);	
 	}
 
 	// get the posible moves for this position
 	int moves[100][4];
 	int numMoves = 0;
+	
 	get_possible_moves(board, turn, moves, &numMoves);
 	
 	// AI turn,  max the score
@@ -1157,14 +1126,14 @@ int minimax(int board[BOARD_SIZE][BOARD_SIZE], int maxDepth, int depth, int turn
 			int boardCopy[BOARD_SIZE][BOARD_SIZE];
 			copy_board(board, boardCopy);
 
-			make_move(boardCopy, turn, y1, x1, y2, x2);
+			make_move(boardCopy, turn, x1, y1, x2, y2);
 			int score = minimax(boardCopy, maxDepth, depth + 1, PLAYER1, alpha, beta);
 
 			if (score > maxScore)
 				maxScore = score;
 
 			if (maxScore > alpha)
-				alpha = maxScore;
+				alpha = maxScore; //alpha max
 
 			// beta prunning
 			if (beta <= alpha) break;
@@ -1192,7 +1161,7 @@ int minimax(int board[BOARD_SIZE][BOARD_SIZE], int maxDepth, int depth, int turn
 				minScore = score;
 
 			if (minScore < beta)
-				beta = minScore;
+				beta = minScore; //beta min
 
 			if (beta <= alpha) break;
 		}
@@ -1200,7 +1169,6 @@ int minimax(int board[BOARD_SIZE][BOARD_SIZE], int maxDepth, int depth, int turn
 		return minScore;
 	}
 }
-
 //====================================================================== 
 bool make_move(int board[BOARD_SIZE][BOARD_SIZE], int turn, int x1, int y1, int x2, int y2) 
 {
@@ -1270,6 +1238,76 @@ int get_number_black_pieces(int board[BOARD_SIZE][BOARD_SIZE])
 	return number_black_pieces;	
 }
 //=====================================================================
+int get_number_BMAN(int board[BOARD_SIZE][BOARD_SIZE])
+{
+	int number_BMAN_pieces=0;
+	
+	for(int x=0; x<BOARD_SIZE; x++){
+	for(int y=0; y<BOARD_SIZE;y++) {
+	
+	if (board[x][y]==BMAN)
+	{
+	number_BMAN_pieces=number_BMAN_pieces+1;
+	}	
+	} //y
+	} //x
+	
+	return number_BMAN_pieces;	
+}
+//====================================================================
+int get_number_BKING(int board[BOARD_SIZE][BOARD_SIZE])
+{
+	int number_BKING_pieces=0;
+	
+	for(int x=0; x<BOARD_SIZE; x++){
+	for(int y=0; y<BOARD_SIZE;y++) {
+	
+	if (board[x][y]==BKING)
+	{
+	number_BKING_pieces=number_BKING_pieces+1;
+	}	
+	} //y
+	} //x
+	
+	return number_BKING_pieces;	
+}
+//=====================================================================
+int get_number_WMAN(int board[BOARD_SIZE][BOARD_SIZE])
+{
+	int number_WMAN_pieces=0;
+	
+	for(int x=0; x<BOARD_SIZE; x++){
+	for(int y=0; y<BOARD_SIZE;y++) {
+	
+	if (board[x][y]==WMAN)
+	{
+	number_WMAN_pieces=number_WMAN_pieces+1;
+	}	
+	} //y
+	} //x
+	
+	return number_WMAN_pieces;	
+}
+
+//=====================================================================
+int get_number_WKING(int board[BOARD_SIZE][BOARD_SIZE])
+{
+	int number_WKING_pieces=0;
+	
+	for(int x=0; x<BOARD_SIZE; x++){
+	for(int y=0; y<BOARD_SIZE;y++) {
+	
+	if (board[x][y]==WKING)
+	{
+	number_WKING_pieces=number_WKING_pieces+1;
+	}	
+	} //y
+	} //x
+	
+	return number_WKING_pieces;	
+}
+
+//=====================================================================
 
 int get_number_white_pieces(int board[BOARD_SIZE][BOARD_SIZE])
 {
@@ -1300,5 +1338,86 @@ bool is_white_win(int board[BOARD_SIZE][BOARD_SIZE])
 	int black_count=get_number_black_pieces(board);
     if(black_count==0)  return TRUE;
     else return FALSE;
+}
+//======================================================================
+bool opponent_can_capture(int board[BOARD_SIZE][BOARD_SIZE], int x, int y)
+{
+	
+	int piece =board[x][y];	
+	bool opp_capture=FALSE;
+	
+	
+	if (piece ==BMAN || piece ==BKING)
+	{		
+		if((x+1<BOARD_SIZE && y-1>0) && (board[x+1][y-1]==WMAN || board[x+1][y-1]==WKING))
+		{	
+			opp_capture = can_capture(board, x+1,y-1);					
+		}
+		if((x-1>0 && y-1>0) && (board[x-1][y-1]==WMAN || board[x-1][y-1]==WKING))
+		{	
+			opp_capture = can_capture(board, x-1,y-1);					
+		}
+			
+	} //BMAN
+	
+	if (piece ==WMAN || WKING)
+	{		
+		if((x+1<BOARD_SIZE && y+1<BOARD_SIZE) && (board[x+1][y+1]==BMAN || board[x+1][y+1]==BKING))
+		{	
+			opp_capture = can_capture(board, x+1,y+1);					
+		}
+		if((x-1>0 && y+1<BOARD_SIZE) && (board[x-1][y+1]==BMAN || board[x-1][y+1]==BKING))
+		{	
+			opp_capture = can_capture(board,x-1,y+1);					
+		}		
+	}
+	
+	
+	return opp_capture;
+}
+//======================================================================
+int evaluate_position(int board[BOARD_SIZE][BOARD_SIZE]) 
+{
+		
+	int WMAN_num = 0, BMAN_num = 0;
+	int WKING_num = 0, BKING_num = 0;
+
+	int score = 0;
+				
+	// count pieces and calculate score	
+		for (int x = 0; x < BOARD_SIZE; x++) {
+        for (int y = 0; y < BOARD_SIZE; y++) {
+			// score for standard pawn pieces
+			if (board[x][y] == BMAN) {
+				BMAN_num++;
+				score += 100;
+			} else if (board[x][y] == WMAN) {
+				WMAN_num++;
+				score -= 100;
+				// more score for king pieces
+			} else if (board[x][y] == BKING) {
+				BKING_num++;
+				score += 300;
+			} else if (board[x][y] == WKING) {
+				WKING_num++;
+				score -= 300;
+			}			
+		}//y
+	} //x
+	
+	//weak reward back lines			
+	if (board[1][7] == BMAN) score += 5;
+	if (board[3][7] == BMAN) score += 5;
+	if (board[5][7] == BMAN) score += 5;
+	if (board[7][7] == BMAN) score += 5;
+	
+	if (board[0][0] == WMAN) score -= 5;
+	if (board[2][0] == WMAN) score -= 5;
+	if (board[4][0] == WMAN) score -= 5;
+	if (board[6][0] == WMAN) score -= 5;
+	
+	score += 10 * (BMAN_num + BKING_num - WMAN_num - WKING_num);
+	
+	return score;
 }
 //======================================================================

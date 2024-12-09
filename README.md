@@ -18,10 +18,6 @@ A move consists of moving a piece forward to a diagonal adjacent unoccupied squa
 
 When a piece reaches the other end of the board it becomes a king and can move and capture diagonally in all directions.
 
-### Updates
-
-The code will be updated as and when I find bugs or make other improvements such as enhancing the AI algorithm. User options will be added in future updates.
-
 ### Pre-built Binary
 
 A 64 bit pre-built binary is available for the Raspberry Pi4 and can be downloaded from the binary folder. The Pi Checkers executable can be run from a terminal as shown below.
@@ -38,21 +34,51 @@ chmod +x picheckers
 
 ## Usage
 
-This is a player-vs-computer game. You (the human player) move a player piece (green piece) on the board by first moving the (blue) cursor to the start piece position and pressing the spacebar and then moving the cursor to the end piece position on the board and pressing the spacebar again. So, move to start location and press spacebar and then move to end location and press spacebar. The cursor colour is blue and the cursor is returned to the bottom left hand corner of the board after a move has been made (i.e. x=0, y=0). Press the a-key (A for AI) to get the built-in AI to respond to your move. Make sure cap-lock is off before pressing the A key.
+This is a human-vs-computer game. You (the human player) first move a player piece on the board. To do this use the keyboard arrow keys to move the blue cursor to the start piece position and press the space-bar to select. Then move the blue cursor to the end piece position on the board and then press the space-bar again to select the end point. So, ***move to start location and press space-bar and then move to end location and press space-bar***.  The cursor is returned to the bottom left of the board after a move has been made (i.e. x=1, y=0). Press the ***A key*** (A for AI) with caps lock off to get the built-in AI to respond to your move. Make sure cap-lock is off before pressing the A key. The cursor colour is blue, the player is light green and the AI is black.
 
-If the human player can make a multiple jump then you jump the first piece and then jump the second piece and so on. The AI can also make multiple jumps. You press the a-key again. Information on the current state of play is shown in an information window next to the checker board. If you get a "white illegal move" it usually means that you have to jump elsewhere or you have tried to move to a position which is not allowed. Start the move again.
+If the human player can make a multiple jump then you jump the first piece and then jump the second piece and so on. The AI can also make multiple jumps. You press the A Key again. Information on the current state of play is shown in an information window next to the checker board. If you get a "white illegal move" it usually means that you have to jump elsewhere or you have tried to move to a position which is not allowed. Start the move again.
 
 When a piece reaches the other end of the board it becomes a king and the piece is given a diamond crown.
 
-There are not many options in this early version of Pi Checkers. However, if you resize the terminal window and the INFO display disappears you can press the i-key to restart the info display.
+### Keys
+
+```
+A key: AI move
+D key: Deep Search (toggle)
+H key: Help
+I key: Redraw INFO window
+R key: Restart Game
+Space-bar: select piece at cursor position
+cntl+C: Quit
+```
+
+If you resize the terminal window and the INFO display disappears you can press the  I key (caps lock off) to restart the info display.
 
 Use cntl+C to finish.
 
 ## AI
 
-The AI uses a minimax algorithm.
+The AI uses a [minimax](https://en.wikipedia.org/wiki/Minimax) algorithm.
 
 ![](pi-checkers-ai.png) 
+
+In the minimax algorithm the depth limit specifies the number of turns to look ahead in the game (search) tree. A higher depth provides a greater chance of playing a better move. However, the minimax algorithm becomes slow when using a large search depth. With Pi Checkers you can toggle the depth search limit using the D Key (caps lock off). This toggles the deep-search mode (maximum depth set to 14) on and off from its normal limit of 8.
+
+![](pi-checkers-deepsearch.png) 
+
+If using the deep-search mode it is best to use [htop](https://htop.dev/) to monitor processor activity. With the Raspberry Pi you can install it using the command below.
+
+```
+sudo apt install htop
+```
+
+The screenshots below show a deep-search move before and after and monitoring this using htop.
+
+![](pi-checkers-deepsearch-move.png) 
+![](pi-checkers-deepsearch-move-completed.png) 
+![](pi-checkers-htop.png) 
+
+Notice that only one of the processors is running at 100% when deep searching. The minimax algorithm is running on one thread using one of the  four CPU cores on the Raspberry Pi 4. Future work will explore if a parallel version of the minimax search algorithm results in greater efficiency.
 
 ## Build From Source
 
@@ -85,9 +111,19 @@ To run Pi Checkers from the terminal use
 
 Pi Checkers can be compiled on other Linux systems once the ncurses library has been installed. [Geany](https://www.geany.org/) was used as the  code editor for developing this project.
 
-## Versioning
+Make clean is also supported.
 
-[SemVer](http://semver.org/) is used for versioning. The version number has the form 0.0.0 representing major, minor and bug fix changes.
+```
+make clean
+```
+
+### Updates
+
+The code will be updated as and when I find bugs or make other improvements such as enhancing the AI algorithm. As mentioned above the AI algorithm is currently running on a single CPU core and is slow when put into the deep-search mode. Although I have implemented a multiple jump strategy this needs to be improved.
+
+## Version Control
+
+[SemVer](http://semver.org/) is used for version control. The version number has the form 0.0.0 representing major, minor and bug fix changes.
 
 ## Author
 

@@ -26,8 +26,9 @@
 #define BOARD_SIZE 8
 
 void init_board(int board[][BOARD_SIZE]);
+void clear_board(int board[][BOARD_SIZE]);
 void init_all(void);
-void make_info_win();
+void create_info_win();
 
 void draw_board(int board[][BOARD_SIZE], int cursor_x, int cursor_y);
 bool move_white(int board[][BOARD_SIZE], int x1, int y1, int x2, int y2);
@@ -55,6 +56,11 @@ int get_number_white_pieces(int board[BOARD_SIZE][BOARD_SIZE]);
 int get_number_black_pieces(int board[BOARD_SIZE][BOARD_SIZE]);
 bool is_black_win(int board[BOARD_SIZE][BOARD_SIZE]);
 bool is_white_win(int board[BOARD_SIZE][BOARD_SIZE]);
+
+int get_number_BMAN(int board[BOARD_SIZE][BOARD_SIZE]);
+int get_number_BKING(int board[BOARD_SIZE][BOARD_SIZE]);
+int get_number_WMAN(int board[BOARD_SIZE][BOARD_SIZE]);
+int get_number_WKING(int board[BOARD_SIZE][BOARD_SIZE]);
 
 
 #endif
