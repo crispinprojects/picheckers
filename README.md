@@ -58,7 +58,7 @@ Use cntl+C to finish.
 
 ## AI
 
-The AI uses a [minimax](https://en.wikipedia.org/wiki/Minimax) algorithm.
+The AI uses a [minimax](https://en.wikipedia.org/wiki/Minimax) algorithm. The minimax algorithm takes piece capture mechanics into account.
 
 ![](pi-checkers-ai.png) 
 
@@ -78,7 +78,7 @@ The screenshots below show a deep-search move before and after and monitoring th
 ![](pi-checkers-deepsearch-move-completed.png) 
 ![](pi-checkers-htop.png) 
 
-Notice that only one of the processors is running at 100% when deep searching. The minimax algorithm is running on one thread using one of the  four CPU cores on the Raspberry Pi 4. Future work will explore if a parallel version of the minimax search algorithm results in greater efficiency.
+Htop shows that only one of the processors is running at 100% when deep searching.
 
 ## Build From Source
 
@@ -117,9 +117,11 @@ Make clean is also supported.
 make clean
 ```
 
-### Updates
+### Future Work
 
-The code will be updated as and when I find bugs or make other improvements such as enhancing the AI algorithm. As mentioned above the AI algorithm is currently running on a single CPU core and is slow when put into the deep-search mode. Although I have implemented a multiple jump strategy this needs to be improved.
+The code will be updated as and when I find bugs or make other improvements such as enhancing the minimax jump algorithm.
+
+The minimax jump algorithm is slow when put into the deep-search mode. Htop shows that the minimax algorithm is running on one thread using one of the four CPU cores of the Raspberry Pi4 processor. Future work will explore if a parallel version of the minimax search algorithm can be developed to reduce search time. 
 
 ## Version Control
 

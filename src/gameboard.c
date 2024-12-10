@@ -28,8 +28,6 @@ WINDOW *info_win;
 #define PLAYER1 1
 #define PLAYER2 2
 
-//int maxDepth=40;
-
 //======================================================================
 void clear_board(int board[][BOARD_SIZE])
 {	
@@ -220,9 +218,10 @@ void create_info_win()
 bool move_white(int board[][BOARD_SIZE], int x1, int y1, int x2, int y2)
 {
 	int piece =board[x1][y1];			
-		
+	int x3=0; //capture coordinates
+	int y3=0; //capture coordinates	
 	int white_king_line =7; //White moving up board
-	bool second_capture =FALSE;
+	bool another_capture =FALSE;
 		
 	if (abs(x2 - x1)==1 && abs(y2-y1)==1) //standard move
     {
@@ -250,21 +249,23 @@ bool move_white(int board[][BOARD_SIZE], int x1, int y1, int x2, int y2)
         board[x2][y2] =WKING;	    
         }       
         //check for another capture
-        second_capture =can_capture(board,x2,y2);        
+        another_capture =can_capture(board,x2,y2, &x3,&y3);        
                 	
 	} //else capture move
 	
-	return second_capture;	
+	return another_capture;	
 	
 }
 //=====================================================================
 bool move_black(int board[][BOARD_SIZE], int x1, int y1, int x2, int y2)
 {
 	
-	int piece =board[x1][y1];			
+	int piece =board[x1][y1];
+	int x3=0; //capture coordinates
+	int y3=0; //capture coordinates				
 	
 	int black_king_line =0; //black moving down board
-	bool second_capture =FALSE;
+	bool another_capture =FALSE;
 		
 	if (abs(x2 - x1)==1 && abs(y2-y1)==1) //standard move
     {
@@ -292,11 +293,11 @@ bool move_black(int board[][BOARD_SIZE], int x1, int y1, int x2, int y2)
         board[x2][y2] =BKING;	    
         }       
         //check for another capture
-        second_capture =can_capture(board, x2,y2);        
+        another_capture =can_capture(board,x2,y2,&x3,&y3);        
                 	
 	} //else capture move
 	
-	return second_capture;	
+	return another_capture;	
 	
 }
 //=====================================================================
@@ -881,112 +882,145 @@ void get_possible_black_moves(int board[BOARD_SIZE][BOARD_SIZE],int possibleMove
 }
 //======================================================================
 
-bool can_capture (int board[BOARD_SIZE][BOARD_SIZE], int x, int y)
-{
-    //white on bottom      
-    
-    bool canjump =FALSE;
-    
+bool can_capture(int board[BOARD_SIZE][BOARD_SIZE], int x, int y, int *x_cap, int *y_cap)
+{    
      if (board[x][y] ==WMAN)
      {        
         if (x-2>-1 && y+2<BOARD_SIZE){
-            if((board[x-1][y+1] == BMAN ||
-                  board[x-1][y+1] == BKING) &&
-                 (board[x-2][y+2] == EMPTY))
-                canjump=TRUE;
+	        if((board[x-1][y+1] == BMAN ||
+	        board[x-1][y+1] == BKING) &&
+	        (board[x-2][y+2] == EMPTY)){                
+	        *x_cap =x-2;
+	        *y_cap =y+2;	       
+	        return TRUE;
+	        }//if
 			}
             
             if (x+2<BOARD_SIZE && y+2<BOARD_SIZE){
-            if ((board[x+1][y+1] == BMAN ||
-                  board[x+1][y+1] == BKING)&&
-                  board[x+2][y+2] == EMPTY)
-                canjump=TRUE;
-			}
-       
+	            if ((board[x+1][y+1] == BMAN ||
+	            board[x+1][y+1] == BKING)&&
+	            board[x+2][y+2] == EMPTY){                 
+	            *x_cap =x+2;
+	            *y_cap =y+2;	            
+	            return TRUE;
+				}                
+			}       
     } //WMAN
      
         
     if (board[x][y] ==BMAN)
     {
 		 if (x+2<BOARD_SIZE && y-2>-1){
-            if ( (board[x+1][y-1] == WMAN ||
-                  board[x+1][y-1] == WKING)&&
-                  board[x+2][y-2] == EMPTY)
-                canjump=TRUE;
+			 if ( (board[x+1][y-1] == WMAN ||
+			 board[x+1][y-1] == WKING)&&
+			 board[x+2][y-2] == EMPTY){                  
+			 *x_cap =x+2;
+			 *y_cap =y-2;                
+			 return TRUE;
+			 }//if
              }
              
         if (x-2>-1 && y-2>-1){
-            if ( (board[x-1][y-1] == WMAN ||
-                  board[x-1][y-1] == WKING)&&
-                  board[x-2][y-2] == EMPTY)
-                canjump=TRUE;  
-			}      
+	        if ( (board[x-1][y-1] == WMAN ||
+	        board[x-1][y-1] == WKING)&&
+	        board[x-2][y-2] == EMPTY){
+	        *x_cap =x-2;
+	        *y_cap =y-2;
+	        return TRUE;
+	        }//if 
+			}
+			      
     }//BMAN
     
     if (board[x][y] ==WKING)
     {
         if (x-2>-1 && y+2<BOARD_SIZE){
-            if ( (board[x-1][y+1] == BMAN ||
-                  board[x-1][y+1] == BKING)&&
-                  board[x-2][y+2] == EMPTY)
-                canjump=TRUE;
+	        if ( (board[x-1][y+1] == BMAN ||
+	        board[x-1][y+1] == BKING)&&
+	        board[x-2][y+2] == EMPTY){               
+	        *x_cap =x-2;
+	        *y_cap =y+2;	        
+	        return TRUE;
+	        }
 			}
 			
-        if (x+2<BOARD_SIZE && y+2<BOARD_SIZE)
+        if (x+2<BOARD_SIZE && y+2<BOARD_SIZE){
             if ( (board[x+1][y+1] == BMAN ||
                   board[x+1][y+1] == BKING)&&
-                  board[x+2][y+2] == EMPTY)
-                canjump=TRUE;
+                  board[x+2][y+2] == EMPTY){               
+                 *x_cap =x+2;
+                *y_cap =y+2;                
+                return TRUE;
+			}//if
+		}
 
         if (x+2<BOARD_SIZE && y-2>-1){
-            if ((board[x+1][y-1] == BMAN ||
-                  board[x+1][y-1] == BKING)&&
-                 board[x+2][y-2] == EMPTY)
-                canjump=TRUE;
+	        if ((board[x+1][y-1] == BMAN ||
+	        board[x+1][y-1] == BKING)&&
+	        board[x+2][y-2] == EMPTY){                
+	        *x_cap =x+2;
+	        *y_cap =y-2;              
+	        return TRUE;
+	        } //if
 			}
                 
         if (x-2>-1 && y-2>-1) {
-            if ( (board[x-1][y-1] == BMAN ||
-                  board[x-1][y-1] == BKING)&&
-                  board[x-2][y-2] == EMPTY)
-                canjump=TRUE;
+	        if ( (board[x-1][y-1] == BMAN ||
+	        board[x-1][y-1] == BKING)&&
+	        board[x-2][y-2] == EMPTY){	        
+	        *x_cap =x-2;
+	        *y_cap =y-2;	        
+	        return TRUE;
+	        }
 			}
     }//WKING
         
     if (board[x][y] ==BKING)
     {
         if (x-2>-1 && y+2<BOARD_SIZE){
-            if ((board[x-1][y+1] == WMAN ||
-                  board[x-1][y+1] == WKING) &&
-                 (board[x-2][y+2] == EMPTY))
-                canjump=TRUE;
-			}
+        if ((board[x-1][y+1] == WMAN ||
+        board[x-1][y+1] == WKING) &&
+        (board[x-2][y+2] == EMPTY)){        
+        *x_cap =x-2;
+        *y_cap =y+2;        
+        return TRUE;
+        }
+		}
         
         if (x+2<BOARD_SIZE && y+2<BOARD_SIZE){
-            if ( (board[x+1][y+1] == WMAN ||
-                  board[x+1][y+1] == WKING)&&
-                  board[x+2][y+2] == EMPTY)
-                canjump=TRUE;
+	        if ( (board[x+1][y+1] == WMAN ||
+	        board[x+1][y+1] == WKING)&&
+	        board[x+2][y+2] == EMPTY){	        
+	        *x_cap =x+2;
+	        *y_cap =y+2;	        
+	        return TRUE;
+	        }
 			}
         
         if (x+2<BOARD_SIZE && y-2>-1){
-            if ((board[x+1][y-1] == WMAN ||
-                  board[x+1][y-1] == WKING) &&
-                 (board[x+2][y-2] == EMPTY))
-                canjump=TRUE;
+	        if ((board[x+1][y-1] == WMAN ||
+	        board[x+1][y-1] == WKING) &&
+	        (board[x+2][y-2] == EMPTY)){               
+	        *x_cap =x+2;
+	        *y_cap =y-2;               
+	        return TRUE;
+	        }
 			}
         
         if (x-2>-1 && y-2>-1){
-            if ((board[x-1][y-1] == WMAN ||
-                  board[x-1][y-1] == WKING)&&
-                  board[x-2][y-2] == EMPTY)
-                canjump=TRUE;
+	        if ((board[x-1][y-1] == WMAN ||
+	        board[x-1][y-1] == WKING)&&
+	        board[x-2][y-2] == EMPTY){                
+	        *x_cap =x-2;
+	        *y_cap =y-2;                
+	        return TRUE;
+	        }
 			}
     }  //BKING
       
-    return canjump;
+    return FALSE;	
+		
 }
-
 //=====================================================================
 
 // create a copy of the board
@@ -1081,8 +1115,10 @@ void get_best_move_AI(int board[BOARD_SIZE][BOARD_SIZE], int turn, int maxDepth,
 	int currenty2 = moves[i][3];	
 	int boardCopy[BOARD_SIZE][BOARD_SIZE];
 	copy_board(board, boardCopy);	
-	make_move(boardCopy, turn, currentx1, currenty1, currentx2, currenty2);
-	int score = minimax(boardCopy, maxDepth, 0, PLAYER1, -9999, 9999); //player 1
+	//make_move(boardCopy, turn, currentx1, currenty1, currentx2, currenty2);
+	make_move(boardCopy, currentx1, currenty1, currentx2, currenty2);
+	//if PLAYER2 then minimax PLAYER1 to get their best moves
+	int score = minimax_jumps(boardCopy, maxDepth, 0, PLAYER1, -9999, 9999); //player 1
 	//int score = minimax(boardCopy, maxDepth, 0, PLAYER2, -9999, 9999); //player 1
 	if (score > bestScore) {
 	bestScore = score;
@@ -1095,129 +1131,6 @@ void get_best_move_AI(int board[BOARD_SIZE][BOARD_SIZE], int turn, int maxDepth,
 	*y1 = moves[bestMoveIndex][1];
 	*x2 = moves[bestMoveIndex][2];
 	*y2 = moves[bestMoveIndex][3];
-}
-
-//======================================================================
-// minimax with alpha-beta prunning
-int minimax(int board[BOARD_SIZE][BOARD_SIZE], int maxDepth, int depth, int turn, int alpha, int beta) 
-{
-	// when max depth is reached, start evaluating the position
-	if (depth == maxDepth) {
-		return evaluate_position(board);	
-	}
-
-	// get the posible moves for this position
-	int moves[100][4];
-	int numMoves = 0;
-	
-	get_possible_moves(board, turn, moves, &numMoves);
-	
-	// AI turn,  max the score
-	if (turn == PLAYER2) { 
-		int maxScore = -9999;
-
-		// for each of the possible moves, call minimax again
-		for (int i = 0; i < numMoves; i++) {
-			int x1 = moves[i][0]; 
-			int y1 = moves[i][1];
-			int x2 = moves[i][2]; 
-			int y2 = moves[i][3];
-			
-			int boardCopy[BOARD_SIZE][BOARD_SIZE];
-			copy_board(board, boardCopy);
-
-			make_move(boardCopy, turn, x1, y1, x2, y2);
-			int score = minimax(boardCopy, maxDepth, depth + 1, PLAYER1, alpha, beta);
-
-			if (score > maxScore)
-				maxScore = score;
-
-			if (maxScore > alpha)
-				alpha = maxScore; //alpha max
-
-			// beta prunning
-			if (beta <= alpha) break;
-		}
-
-		return maxScore;
-		// my turn, min the score
-	} else { 
-		int minScore = 9999;
-
-		// for each of the possible moves, call minimax again
-		for (int i = 0; i < numMoves; i++) {
-			int x1 = moves[i][0]; 
-			int y1 = moves[i][1];
-			int x2 = moves[i][2];
-			int y2 = moves[i][3];
-			
-			int boardCopy[BOARD_SIZE][BOARD_SIZE];
-			copy_board(board, boardCopy);
-
-			make_move(boardCopy, turn, x1, y1, x2, y2);
-			int score = minimax(boardCopy, maxDepth, depth + 1, PLAYER2, alpha, beta);
-
-			if (score < minScore)
-				minScore = score;
-
-			if (minScore < beta)
-				beta = minScore; //beta min
-
-			if (beta <= alpha) break;
-		}
-
-		return minScore;
-	}
-}
-//====================================================================== 
-bool make_move(int board[BOARD_SIZE][BOARD_SIZE], int turn, int x1, int y1, int x2, int y2) 
-{
-	int player=board[x1][y1];
-	
-	bool second_capture =FALSE;	
-	//White on bottom
-	int white_king_line =7;
-	int black_king_line =0;
-	
-	if (abs(x2 - x1) == 1) //standard move
-    {	
-	board[x2][y2] = player;
-	board[x1][y1] = EMPTY;	
-	//Check for Kings with standard move	
-	if (y2 == white_king_line && player == WMAN) 
-	{			
-		board[x2][y2] = WKING;
-	} 
-	
-	else if (y2== black_king_line && player==BMAN) {	
-		
-		board[x2][y2] = BKING;           
-	}
-	
-	} //if standard move
-	
-	else if(abs(x2 - x1) == 2) //capture move	
-	{		
-		int x_cap =abs((x1 + x2)/2);
-		int y_cap =abs((y1 + y2)/2);
-					
-        board[x_cap][y_cap] = EMPTY;
-        board[x2][y2] = player;
-        board[x1][y1] = EMPTY;
-       
-        //Check for Kings after capture
-        if (y2 ==white_king_line && player == WMAN) {
-        board[x2][y2] =WKING;	     
-        }
-        else if (y2== black_king_line && player==BMAN) {        
-        board[x2][y2] =BKING;
-        }
-        //check for another capture
-        second_capture =can_capture(board,x2,y2);
-                       	
-	} //else capture move
-	
-	return second_capture;	
 }
 //======================================================================
 
@@ -1339,46 +1252,65 @@ bool is_white_win(int board[BOARD_SIZE][BOARD_SIZE])
     if(black_count==0)  return TRUE;
     else return FALSE;
 }
-//======================================================================
-bool opponent_can_capture(int board[BOARD_SIZE][BOARD_SIZE], int x, int y)
+
+//====================================================================== 
+void make_move(int board[BOARD_SIZE][BOARD_SIZE],int x1, int y1, int x2, int y2) 
 {
+	int player=board[x1][y1];
 	
-	int piece =board[x][y];	
-	bool opp_capture=FALSE;
+	//bool second_capture =FALSE;	
+	//White on bottom
+	int white_king_line =7;
+	int black_king_line =0;
 	
+	if (abs(x2 - x1) == 1) //standard move
+    {	
+	board[x2][y2] = player;
+	board[x1][y1] = EMPTY;	
+	//Check for Kings with standard move	
+	if (y2 == white_king_line && player == WMAN) 
+	{			
+		board[x2][y2] = WKING;
+	} 
 	
-	if (piece ==BMAN || piece ==BKING)
-	{		
-		if((x+1<BOARD_SIZE && y-1>0) && (board[x+1][y-1]==WMAN || board[x+1][y-1]==WKING))
-		{	
-			opp_capture = can_capture(board, x+1,y-1);					
-		}
-		if((x-1>0 && y-1>0) && (board[x-1][y-1]==WMAN || board[x-1][y-1]==WKING))
-		{	
-			opp_capture = can_capture(board, x-1,y-1);					
-		}
-			
-	} //BMAN
-	
-	if (piece ==WMAN || WKING)
-	{		
-		if((x+1<BOARD_SIZE && y+1<BOARD_SIZE) && (board[x+1][y+1]==BMAN || board[x+1][y+1]==BKING))
-		{	
-			opp_capture = can_capture(board, x+1,y+1);					
-		}
-		if((x-1>0 && y+1<BOARD_SIZE) && (board[x-1][y+1]==BMAN || board[x-1][y+1]==BKING))
-		{	
-			opp_capture = can_capture(board,x-1,y+1);					
-		}		
+	else if (y2== black_king_line && player==BMAN) {	
+		
+		board[x2][y2] = BKING;           
 	}
 	
+	} //if standard move
 	
-	return opp_capture;
+	else if(abs(x2 - x1) == 2) //capture move	
+	{		
+		int x_cap =abs((x1 + x2)/2);
+		int y_cap =abs((y1 + y2)/2);
+					
+        board[x_cap][y_cap] = EMPTY;
+        board[x2][y2] = player;
+        board[x1][y1] = EMPTY;
+       
+        //Check for Kings after capture
+        if (y2 ==white_king_line && player == WMAN) {
+        board[x2][y2] =WKING;	     
+        }
+        else if (y2== black_king_line && player==BMAN) {        
+        board[x2][y2] =BKING;
+        }
+        //check for another capture
+        //second_capture =can_capture(board,x2,y2);
+                       	
+	} //else capture move
+	
+	//return second_capture;	
 }
+
 //======================================================================
 int evaluate_position(int board[BOARD_SIZE][BOARD_SIZE]) 
 {
 		
+	//as search depth increases piece count becomes the
+	//dominant factor
+	
 	int WMAN_num = 0, BMAN_num = 0;
 	int WKING_num = 0, BKING_num = 0;
 
@@ -1405,7 +1337,7 @@ int evaluate_position(int board[BOARD_SIZE][BOARD_SIZE])
 		}//y
 	} //x
 	
-	//weak reward back lines			
+	//weak reward for back lines			
 	if (board[1][7] == BMAN) score += 5;
 	if (board[3][7] == BMAN) score += 5;
 	if (board[5][7] == BMAN) score += 5;
@@ -1420,4 +1352,187 @@ int evaluate_position(int board[BOARD_SIZE][BOARD_SIZE])
 	
 	return score;
 }
+
 //======================================================================
+// minimax with alpha-beta prunning
+//int minimax(int board[BOARD_SIZE][BOARD_SIZE], int maxDepth, int depth, int turn, int alpha, int beta) 
+//{
+	//// when max depth is reached, start evaluating the position
+	//if (depth == maxDepth) {
+		//return evaluate_position(board);	
+	//}
+
+	//// get the posible moves for this position
+	//int moves[100][4];
+	//int numMoves = 0;
+	
+	//get_possible_moves(board, turn, moves, &numMoves);
+	
+	//// AI turn,  max the score
+	//if (turn == PLAYER2) { 
+		//int maxScore = -9999;
+
+		//// for each of the possible moves, call minimax again
+		//for (int i = 0; i < numMoves; i++) {
+			//int x1 = moves[i][0]; 
+			//int y1 = moves[i][1];
+			//int x2 = moves[i][2]; 
+			//int y2 = moves[i][3];
+			
+			//int boardCopy[BOARD_SIZE][BOARD_SIZE];
+			//copy_board(board, boardCopy);
+
+			//make_move(boardCopy,x1, y1, x2, y2);
+			//int score = minimax(boardCopy, maxDepth, depth + 1, PLAYER1, alpha, beta);
+
+			//if (score > maxScore)
+				//maxScore = score;
+
+			//if (maxScore > alpha)
+				//alpha = maxScore; //alpha max
+
+			//// beta prunning
+			//if (beta <= alpha) break;
+		//}
+
+		//return maxScore;
+		//// my turn, min the score
+	//} else { 
+		//int minScore = 9999;
+
+		//// for each of the possible moves, call minimax again
+		//for (int i = 0; i < numMoves; i++) {
+			//int x1 = moves[i][0]; 
+			//int y1 = moves[i][1];
+			//int x2 = moves[i][2];
+			//int y2 = moves[i][3];
+			
+			//int boardCopy[BOARD_SIZE][BOARD_SIZE];
+			//copy_board(board, boardCopy);
+
+			//make_move(boardCopy, x1, y1, x2, y2);
+			//int score = minimax(boardCopy, maxDepth, depth + 1, PLAYER2, alpha, beta);
+
+			//if (score < minScore)
+				//minScore = score;
+
+			//if (minScore < beta)
+				//beta = minScore; //beta min
+
+			//if (beta <= alpha) break;
+		//}
+
+		//return minScore;
+	//}
+//}
+
+//======================================================================
+// minimax jump algorithm with alpha-beta prunning
+int minimax_jumps(int board[BOARD_SIZE][BOARD_SIZE], int maxDepth, int depth, int turn, int alpha, int beta) 
+{
+	// when max depth is reached, start evaluating the position
+	if (depth == maxDepth) {
+		return evaluate_position(board);	
+	}
+
+	// get the posible moves for this position
+	int moves[100][4];
+	int numMoves = 0;
+	bool another_capture=FALSE;
+	
+	get_possible_moves(board, turn, moves, &numMoves);
+	
+	// AI turn,  max the score
+	if (turn == PLAYER2) { 
+		int maxScore = -9999;
+
+		// for each of the possible moves, call minimax again
+		for (int i = 0; i < numMoves; i++) {
+			int x1 = moves[i][0]; 
+			int y1 = moves[i][1];
+			int x2 = moves[i][2]; 
+			int y2 = moves[i][3];
+			
+			int boardCopy[BOARD_SIZE][BOARD_SIZE];
+			copy_board(board, boardCopy);
+			
+			
+			
+			capture_max:
+			make_move(boardCopy,x1, y1, x2, y2);
+			int x3=0;
+			int y3=0;
+			another_capture =can_capture(boardCopy,x2,y2,&x3,&y3);
+					
+			if(another_capture)
+			{								
+				x1=x2;
+				y1=y2;
+				x2=x3;
+				y2=y3;				
+				goto capture_max;
+			}
+			
+			int score = minimax_jumps(boardCopy, maxDepth, depth + 1, PLAYER1, alpha, beta);
+					
+
+			if (score > maxScore)
+				maxScore = score;
+
+			if (maxScore > alpha)
+				alpha = maxScore; //alpha max
+
+			// beta prunning
+			if (beta <= alpha) break;
+		}
+
+		return maxScore;
+		// my turn, min the score
+	} else { 
+		int minScore = 9999;
+
+		// for each of the possible moves, call minimax again
+		for (int i = 0; i < numMoves; i++) {
+			int x1 = moves[i][0]; 
+			int y1 = moves[i][1];
+			int x2 = moves[i][2];
+			int y2 = moves[i][3];
+			
+			int boardCopy[BOARD_SIZE][BOARD_SIZE];
+			copy_board(board, boardCopy);
+
+			
+			capture_min:
+			make_move(boardCopy, x1, y1, x2, y2);
+			int x3=0;
+			int y3=0;
+			another_capture =can_capture(boardCopy,x2,y2,&x3,&y3);
+						
+			if(another_capture)
+			{								
+				x1=x2;
+				y1=y2;
+				x2=x3;
+				y2=y3;
+				goto capture_min;								
+			}		
+			
+			int score = minimax_jumps(boardCopy, maxDepth, depth + 1, PLAYER2, alpha, beta);
+
+			if (score < minScore)
+				minScore = score;
+
+			if (minScore < beta)
+				beta = minScore; //beta min
+
+			if (beta <= alpha) break;
+		}
+
+		return minScore;
+	}
+}
+
+//======================================================================
+
+
+

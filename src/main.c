@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 	init_all();
 	
 	create_info_win();
-	mvwprintw(info_win, 2, 2, "Pi Checkers v0.2: Human To Move         ");
+	mvwprintw(info_win, 2, 2, "Pi Checkers v0.3: Human To Move         ");
 	mvwprintw(info_win, 3, 2, "A key: AI move                          ");
 	mvwprintw(info_win, 4, 2, "D key: Deep Search                      ");
 	mvwprintw(info_win, 5, 2, "H key: Help                             ");
@@ -298,7 +298,15 @@ int main(int argc, char **argv)
 		else {
 		clear_info_window();
 		mvwprintw(info_win, 2, 2, "WHITE MOVE: (%d,%d)->(%d,%d)          ",human_x1,human_y1,human_x2,human_y2);		
-		mvwprintw(info_win, 3, 2, "AI TO MOVE (PRESS A KEY)       ");
+		
+		if(m_deep_search){
+		mvwprintw(info_win, 3, 2, "AI TO MOVE (PRESS A KEY & WAIT)      ");
+		mvwprintw(info_win, 4, 2, "DEEP SEARCH (TAKES TIME): DEPTH = %d  ",max_depth);
+		}
+		else {
+		mvwprintw(info_win, 3, 2, "AI TO MOVE (PRESS A KEY)              ");
+		mvwprintw(info_win, 4, 2, "STANDARD SEARCH: DEPTH = %d           ",max_depth);
+	    }
 		wrefresh(info_win);
 	    }
 		

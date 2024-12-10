@@ -33,7 +33,8 @@ void create_info_win();
 void draw_board(int board[][BOARD_SIZE], int cursor_x, int cursor_y);
 bool move_white(int board[][BOARD_SIZE], int x1, int y1, int x2, int y2);
 bool move_black(int board[][BOARD_SIZE], int x1, int y1, int x2, int y2);
-bool can_capture (int board[BOARD_SIZE][BOARD_SIZE], int x, int y);
+
+bool can_capture(int board[BOARD_SIZE][BOARD_SIZE], int x, int y, int *x_cap, int *y_cap);
 
 bool is_white_move_valid(int board[BOARD_SIZE][BOARD_SIZE],int x1, int y1, int x2, int y2);
 void get_possible_white_moves(int board[BOARD_SIZE][BOARD_SIZE],int possibleMoves[100][4], int* numMoves);
@@ -47,8 +48,15 @@ void copy_board(int src[BOARD_SIZE][BOARD_SIZE], int dest[BOARD_SIZE][BOARD_SIZE
 int evaluate_position(int board[BOARD_SIZE][BOARD_SIZE]);
 void get_possible_moves(int board[BOARD_SIZE][BOARD_SIZE], int turn, int possibleMoves[100][4], int* numMoves);
 
-int minimax(int board[BOARD_SIZE][BOARD_SIZE], int maxDepth, int depth, int turn, int alpha, int beta);
-bool make_move(int board[BOARD_SIZE][BOARD_SIZE], int turn, int x1, int y1, int x2, int y2);
+//int minimax(int board[BOARD_SIZE][BOARD_SIZE], int maxDepth, int depth, int turn, int alpha, int beta);
+int minimax_jumps(int board[BOARD_SIZE][BOARD_SIZE], int maxDepth, int depth, int turn, int alpha, int beta);
+
+
+//int get_capture_y(int board[][BOARD_SIZE], int x, int y);
+
+//bool make_move(int board[BOARD_SIZE][BOARD_SIZE], int turn, int x1, int y1, int x2, int y2);
+void make_move(int board[BOARD_SIZE][BOARD_SIZE], int x1, int y1, int x2, int y2);
+
 
 void get_best_move_AI(int board[BOARD_SIZE][BOARD_SIZE], int turn, int maxDepth, int* x1, int* y1, int* x2, int* y2);
 
