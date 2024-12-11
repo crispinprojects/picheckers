@@ -28,6 +28,8 @@ WINDOW *info_win;
 #define PLAYER1 1
 #define PLAYER2 2
 
+bool depth_monitor =TRUE;
+
 //======================================================================
 void clear_board(int board[][BOARD_SIZE])
 {	
@@ -214,6 +216,14 @@ void create_info_win()
 	touchwin(info_win);
 	wrefresh(info_win);
 }
+//=====================================================================
+
+void set_monitor(bool value)
+{
+	depth_monitor=value;
+}
+
+
 //=====================================================================
 bool move_white(int board[][BOARD_SIZE], int x1, int y1, int x2, int y2)
 {
@@ -1430,6 +1440,12 @@ int evaluate_position(int board[BOARD_SIZE][BOARD_SIZE])
 // minimax jump algorithm with alpha-beta prunning
 int minimax_jumps(int board[BOARD_SIZE][BOARD_SIZE], int maxDepth, int depth, int turn, int alpha, int beta) 
 {
+	
+	if(depth_monitor)
+	{
+	mvwprintw(info_win, 8, 2, "Depth Monitor: %d                   ",depth);
+	wrefresh(info_win);
+     }
 	// when max depth is reached, start evaluating the position
 	if (depth == maxDepth) {
 		return evaluate_position(board);	

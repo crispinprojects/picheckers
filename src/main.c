@@ -70,6 +70,7 @@ int main(int argc, char **argv)
 	int x=1;
 	int y=0;
 	bool m_deep_search=FALSE;
+	bool watch_monitor=TRUE;
 	bool m_first_press=TRUE;
 	int m_side =HUMAN;	
 	int ch=0;	
@@ -80,13 +81,15 @@ int main(int argc, char **argv)
 	init_all();
 	
 	create_info_win();
-	mvwprintw(info_win, 2, 2, "Pi Checkers v0.3: Human To Move         ");
+	mvwprintw(info_win, 2, 2, "Pi Checkers v0.3.1                      ");
 	mvwprintw(info_win, 3, 2, "A key: AI move                          ");
 	mvwprintw(info_win, 4, 2, "D key: Deep Search                      ");
 	mvwprintw(info_win, 5, 2, "H key: Help                             ");
 	mvwprintw(info_win, 6, 2, "I key: Redraw INFO window               ");
-	mvwprintw(info_win, 7, 2, "R key: Restart Game                      ");
-	mvwprintw(info_win, 8, 2, "Spacebar: select piece                   ");
+	mvwprintw(info_win, 7, 2, "M key: Monitor                          ");
+	mvwprintw(info_win, 8, 2, "R key: Restart Game                      ");
+	mvwprintw(info_win, 9, 2, "Spacebar: select piece                   ");
+	mvwprintw(info_win, 10, 2, "HUMAN TO MOVE                           ");
 	wrefresh(info_win);
   
     
@@ -120,7 +123,7 @@ int main(int argc, char **argv)
 				 m_deep_search=TRUE; //toggle
 			 }
 			 else {
-				  max_depth=8;
+				 max_depth=8;
 				 m_deep_search=FALSE; //toggle				 
 			 }
 			 
@@ -142,6 +145,35 @@ int main(int argc, char **argv)
 			wrefresh(info_win);
 		}
 		
+		else if(ch == 109){ //m key
+			//monitor -todo
+			if(watch_monitor ==FALSE)
+			 {	
+				 set_monitor(TRUE);
+				 watch_monitor=TRUE;
+				 clear_info_window();
+				 mvwprintw(info_win, 2, 2, "DEPTH MONITOR ON ");
+				 if(m_side ==HUMAN) 				 
+			     mvwprintw(info_win, 3, 2, "HUMAN TO MOVE                  ");			
+			     else 
+			     mvwprintw(info_win, 3, 2, "AI TO MOVE (PRESS A KEY)       ");
+			     wrefresh(info_win);
+			 }
+			 else {
+				  
+				 //deep_monitor=FALSE; //toggle
+				 set_monitor(FALSE);
+				 watch_monitor=FALSE;
+				 clear_info_window();
+				 mvwprintw(info_win, 2, 2, "DEPTH MONITOR OFF ");
+				 if(m_side ==HUMAN) 				 
+			     mvwprintw(info_win, 3, 2, "HUMAN TO MOVE                  ");			
+			     else 
+			     mvwprintw(info_win, 3, 2, "AI TO MOVE (PRESS A KEY)       ");
+			     wrefresh(info_win);				 
+			 }
+			
+		}
 		
 		else if(ch == 104){ //h key
 			
@@ -151,12 +183,13 @@ int main(int argc, char **argv)
 			mvwprintw(info_win, 4, 2, "D key: Deep Search                      ");
 			mvwprintw(info_win, 5, 2, "H key: Help                             ");
 			mvwprintw(info_win, 6, 2, "I key: Redraw INFO window               ");
-			mvwprintw(info_win, 7, 2, "R key: Restart Game                      ");
-			mvwprintw(info_win, 8, 2, "Spacebar: select piece                   ");
+			mvwprintw(info_win, 7, 2, "M key: Monitor                          ");
+			mvwprintw(info_win, 8, 2, "R key: Restart Game                      ");
+			mvwprintw(info_win, 9, 2, "Spacebar: select piece                   ");
 			
 			if(m_side ==HUMAN) 
-			mvwprintw(info_win, 9, 2, "HUMAN TO MOVE                  ");
-			else mvwprintw(info_win, 9, 2, "AI TO MOVE (PRESS A KEY)       ");
+			mvwprintw(info_win, 10, 2, "HUMAN TO MOVE                  ");
+			else mvwprintw(info_win, 10, 2, "AI TO MOVE (PRESS A KEY)       ");
 			
 			wrefresh(info_win);		
 		}
@@ -169,12 +202,13 @@ int main(int argc, char **argv)
 			mvwprintw(info_win, 4, 2, "D key: Deep Search                      ");
 			mvwprintw(info_win, 5, 2, "H key: Help                             ");
 			mvwprintw(info_win, 6, 2, "I key: Redraw INFO window               ");
-			mvwprintw(info_win, 7, 2, "R key: Restart Game                      ");
-			mvwprintw(info_win, 8, 2, "Spacebar: select piece                   ");
+			mvwprintw(info_win, 7, 2, "M key: Monitor                          ");
+			mvwprintw(info_win, 8, 2, "R key: Restart Game                      ");
+			mvwprintw(info_win, 9, 2, "Spacebar: select piece                   ");
 						
 			if(m_side ==HUMAN) 
-			     mvwprintw(info_win, 9, 2, "HUMAN TO MOVE                  ");
-			else mvwprintw(info_win, 9, 2, "AI TO MOVE (PRESS A KEY)       ");
+			     mvwprintw(info_win, 10, 2, "HUMAN TO MOVE                  ");
+			else mvwprintw(info_win, 10, 2, "AI TO MOVE (PRESS A KEY)       ");
 			
 			wrefresh(info_win);		
 		}
@@ -202,9 +236,10 @@ int main(int argc, char **argv)
 		mvwprintw(info_win, 4, 2, "D key: Deep Search                      ");
 		mvwprintw(info_win, 5, 2, "H key: Help                             ");
 		mvwprintw(info_win, 6, 2, "I key: Redraw INFO window               ");
-		mvwprintw(info_win, 7, 2, "R key: Restart Game                      ");
-		mvwprintw(info_win, 8, 2, "Spacebar: select piece                   ");		
-		mvwprintw(info_win, 9, 2, "HUMAN TO MOVE                  ");
+		mvwprintw(info_win, 7, 2, "M key: Monitor                          ");
+		mvwprintw(info_win, 8, 2, "R key: Restart Game                      ");
+		mvwprintw(info_win, 9, 2, "Spacebar: select piece                   ");		
+		mvwprintw(info_win, 10, 2, "HUMAN TO MOVE                  ");
 		wrefresh(info_win);		
 		}
 		
@@ -301,7 +336,7 @@ int main(int argc, char **argv)
 		
 		if(m_deep_search){
 		mvwprintw(info_win, 3, 2, "AI TO MOVE (PRESS A KEY & WAIT)      ");
-		mvwprintw(info_win, 4, 2, "DEEP SEARCH (TAKES TIME): DEPTH = %d  ",max_depth);
+		mvwprintw(info_win, 4, 2, "DEEP SEARCH (LONG TIME): MAXDEPTH = %d",max_depth);
 		}
 		else {
 		mvwprintw(info_win, 3, 2, "AI TO MOVE (PRESS A KEY)              ");

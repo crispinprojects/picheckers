@@ -58,7 +58,7 @@ Use cntl+C to finish.
 
 ## AI
 
-The AI uses a [minimax](https://en.wikipedia.org/wiki/Minimax) algorithm. The minimax algorithm takes piece capture mechanics into account.
+The AI uses a [minimax](https://en.wikipedia.org/wiki/Minimax) algorithm. There is a MIT OpenCourseWare lecture on the minimax algorithm [here](https://www.youtube.com/watch?v=STjW3eH0Cik&t=13s). My minimax algorithm takes piece capture mechanics into account.
 
 ![](pi-checkers-ai.png) 
 
@@ -144,3 +144,5 @@ Active.
 * [Raspberry Pi Foundation](https://www.raspberrypi.org/)
 
 * [Geany](https://www.geany.org/) is a lightweight source-code editor [GPL v2 license](https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt)
+
+* [MIT OpenCourseWare Lecture. Search: Games, Minimax and Alpha-Beta](https://www.youtube.com/watch?v=STjW3eH0Cik&t=13s)

@@ -25,6 +25,9 @@
 
 #define BOARD_SIZE 8
 
+//bool depth_monitor =TRUE;
+void set_monitor(bool value);
+
 void init_board(int board[][BOARD_SIZE]);
 void clear_board(int board[][BOARD_SIZE]);
 void init_all(void);
