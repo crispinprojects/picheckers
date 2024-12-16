@@ -75,13 +75,13 @@ int main(int argc, char **argv)
 	int m_side =HUMAN;	
 	int ch=0;	
 	
-	int max_depth=8;
+	int max_depth=10;
 
 	init_board(board);
 	init_all();
 	
 	create_info_win();
-	mvwprintw(info_win, 2, 2, "Pi Checkers v0.3.1                      ");
+	mvwprintw(info_win, 2, 2, "Pi Checkers v0.3.2                      ");
 	mvwprintw(info_win, 3, 2, "A key: AI move                          ");
 	mvwprintw(info_win, 4, 2, "D key: Deep Search                      ");
 	mvwprintw(info_win, 5, 2, "H key: Help                             ");
@@ -123,7 +123,7 @@ int main(int argc, char **argv)
 				 m_deep_search=TRUE; //toggle
 			 }
 			 else {
-				 max_depth=8;
+				 max_depth=10;
 				 m_deep_search=FALSE; //toggle				 
 			 }
 			 
@@ -255,7 +255,7 @@ int main(int argc, char **argv)
 				//AI returned non-valid move				
 				clear_info_window();	
 				mvwprintw(info_win, 2, 2, "BLACK AI MOVE: (%d,%d)->(%d,%d)    ",ai_x1,ai_y1,ai_x2,ai_y2);			
-				mvwprintw(info_win, 3, 2, "AI FAILED: SORRY GAME OVER.          ");
+				mvwprintw(info_win, 3, 2, " AI FAILED: SORRY GAME OVER.          ");
 				//mvwprintw(info_win, 4, 2, "AI FAILED: SORRY GAME OVER.          ");
 				wrefresh(info_win);	
 			}
@@ -340,7 +340,7 @@ int main(int argc, char **argv)
 		}
 		else {
 		mvwprintw(info_win, 3, 2, "AI TO MOVE (PRESS A KEY)              ");
-		mvwprintw(info_win, 4, 2, "STANDARD SEARCH: DEPTH = %d           ",max_depth);
+		mvwprintw(info_win, 4, 2, "STANDARD SEARCH: MAXDEPTH = %d         ",max_depth);
 	    }
 		wrefresh(info_win);
 	    }

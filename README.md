@@ -2,7 +2,7 @@
 
 Pi Checkers is a demo of the classic human-vs-computer checkers game for the Raspberry Pi. 
 
-It can be run from the terminal and uses ncurses for the user interface so that Pi Checkers can be played by users who ssh into their Raspberry Pi.
+It can be run from the terminal and uses ncurses for the user interface so that Pi Checkers can be played by users who [ssh](https://www.raspberrypi.com/documentation/computers/remote-access.html) into their Raspberry Pi.
 
 A screenshot is shown below.
 
@@ -34,7 +34,7 @@ chmod +x picheckers
 
 ## Usage
 
-This is a human-vs-computer game. You (the human player) first move a player piece on the board. To do this use the keyboard arrow keys to move the blue cursor to the start piece position and press the space-bar to select. Then move the blue cursor to the end piece position on the board and then press the space-bar again to select the end point. So, ***move to start location and press space-bar and then move to end location and press space-bar***.  The cursor is returned to the bottom left of the board after a move has been made (i.e. x=1, y=0). Press the ***A key*** (A for AI) with caps lock off to get the built-in AI to respond to your move. Make sure cap-lock is off before pressing the A key. The cursor colour is blue, the player is light green and the AI is black.
+This is a human-vs-computer game. You (the human player) first move a player piece on the board. To do this use the keyboard arrow keys to move the blue cursor to the start piece position and press the space-bar to select. Then move the blue cursor to the end piece position on the board and then press the space-bar again to select the end point. So, ***move to start location and press space-bar and then move to end location and press space-bar***.  The cursor is returned to the bottom left of the board after a move has been made (i.e. x=1, y=0). Press the ***A key*** (A for AI) with caps lock off to get the built-in AI to respond to your move. Make sure cap-lock is off before pressing the A key. The cursor colour is blue, the human white player is light green and the AI is black.
 
 If the human player can make a multiple jump then you jump the first piece and then jump the second piece and so on. The AI can also make multiple jumps. You press the A Key again. Information on the current state of play is shown in an information window next to the checker board. If you get a "white illegal move" it usually means that you have to jump elsewhere or you have tried to move to a position which is not allowed. Start the move again.
 
@@ -78,7 +78,7 @@ The screenshots below show a deep-search move before and after and monitoring th
 ![](pi-checkers-deepsearch-move-completed.png) 
 ![](pi-checkers-htop.png) 
 
-Htop shows that only one of the processors is running at 100% when deep searching.
+Htop shows processor activity  and memory useage when deep searching.
 
 ## Build From Source
 
@@ -121,7 +121,7 @@ make clean
 
 The code will be updated as and when I find bugs or make other improvements such as enhancing the minimax jump algorithm.
 
-The minimax jump algorithm is slow when put into the deep-search mode. Htop shows that the minimax algorithm is running on one thread using one of the four CPU cores of the Raspberry Pi4 processor. Future work will explore if a parallel version of the minimax search algorithm can be developed to reduce search time. 
+The minimax jump algorithm is slow when put into the deep-search mode. Future work will explore if a parallel version of the minimax search algorithm can be developed to reduce search time. 
 
 ## Version Control
 
@@ -146,3 +146,5 @@ Active.
 * [Geany](https://www.geany.org/) is a lightweight source-code editor [GPL v2 license](https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt)
 
 * [MIT OpenCourseWare Lecture. Search: Games, Minimax and Alpha-Beta](https://www.youtube.com/watch?v=STjW3eH0Cik&t=13s)
+
+* [DroneBot Workshop: Raspberry Pi Remote Access - 3 Methods](https://www.youtube.com/watch?v=l4VDWhKsFgs)

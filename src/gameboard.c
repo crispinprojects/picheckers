@@ -25,8 +25,8 @@ WINDOW *info_win;
 #define WKING 3
 #define BKING 4
 
-#define PLAYER1 1
-#define PLAYER2 2
+#define PLAYER1 1 //white
+#define PLAYER2 2  //black AI
 
 bool depth_monitor =TRUE;
 
@@ -492,7 +492,7 @@ void get_possible_white_moves(int board[BOARD_SIZE][BOARD_SIZE],int possibleMove
 	       if ((board[x][y] == WKING) && (board[x_mid][y_mid] == BMAN || board[x_mid][y_mid] == BKING)
 	       && (board[x_jump][y_jump] == EMPTY))
 	       {	       					 
-	       jump_moves[num_jump_moves][0] =x;
+	        jump_moves[num_jump_moves][0] =x;
 			jump_moves[num_jump_moves][1] =y;
 			jump_moves[num_jump_moves][2]=x_jump;
 			jump_moves[num_jump_moves][3]=y_jump;
@@ -568,15 +568,15 @@ void get_possible_white_moves(int board[BOARD_SIZE][BOARD_SIZE],int possibleMove
 		//*numMoves =num_jump_moves;
 		num_moves=num_jump_moves;		
 		for (int i = 0; i < num_jump_moves; ++i) {
-		int currenty1 = jump_moves[i][0];
-		int currentx1 = jump_moves[i][1];
-		int currenty2 = jump_moves[i][2];
-		int currentx2 = jump_moves[i][3];
+		int currentx1 = jump_moves[i][0];
+		int currenty1 = jump_moves[i][1];
+		int currentx2 = jump_moves[i][2];
+		int currenty2 = jump_moves[i][3];
 		
-		possibleMoves[i][0]=currenty1;
-		possibleMoves[i][1]=currentx1; 
-		possibleMoves[i][2]=currenty2;
-		possibleMoves[i][3]=currentx2;
+		possibleMoves[i][0]=currentx1;
+		possibleMoves[i][1]=currenty1; 
+		possibleMoves[i][2]=currentx2;
+		possibleMoves[i][3]=currenty2;
 		}//for		
 	} //if jump move
 	else {
@@ -584,15 +584,15 @@ void get_possible_white_moves(int board[BOARD_SIZE][BOARD_SIZE],int possibleMove
 		//*numMoves =num_standard_moves;
 		num_moves=num_standard_moves;		
 		for (int i = 0; i < num_standard_moves; ++i) {
-		int currenty1 = standard_moves[i][0];
-		int currentx1 = standard_moves[i][1];
-		int currenty2 = standard_moves[i][2];
-		int currentx2 = standard_moves[i][3];
+		int currentx1 = standard_moves[i][0];
+		int currenty1 = standard_moves[i][1];
+		int currentx2 = standard_moves[i][2];
+		int currenty2 = standard_moves[i][3];
 		
-		possibleMoves[i][0]=currenty1;
-		possibleMoves[i][1]=currentx1; 
-		possibleMoves[i][2]=currenty2;
-		possibleMoves[i][3]=currentx2;
+		possibleMoves[i][0]=currentx1;
+		possibleMoves[i][1]=currenty1; 
+		possibleMoves[i][2]=currentx2;
+		possibleMoves[i][3]=currenty2;
 		}//for
 	}//else standard move	
 	
@@ -859,15 +859,15 @@ void get_possible_black_moves(int board[BOARD_SIZE][BOARD_SIZE],int possibleMove
 		//*numMoves =num_jump_moves;
 		num_moves=num_jump_moves;		
 		for (int i = 0; i < num_jump_moves; ++i) {
-		int currenty1 = jump_moves[i][0];
-		int currentx1 = jump_moves[i][1];
-		int currenty2 = jump_moves[i][2];
-		int currentx2 = jump_moves[i][3];
+		int currentx1 = jump_moves[i][0];
+		int currenty1 = jump_moves[i][1];
+		int currentx2 = jump_moves[i][2];
+		int currenty2 = jump_moves[i][3];
 		
-		possibleMoves[i][0]=currenty1;
-		possibleMoves[i][1]=currentx1; 
-		possibleMoves[i][2]=currenty2;
-		possibleMoves[i][3]=currentx2;
+		possibleMoves[i][0]=currentx1;
+		possibleMoves[i][1]=currenty1; 
+		possibleMoves[i][2]=currentx2;
+		possibleMoves[i][3]=currenty2;
 		}//for		
 	} //if jump move
 	else {
@@ -875,15 +875,15 @@ void get_possible_black_moves(int board[BOARD_SIZE][BOARD_SIZE],int possibleMove
 		//*numMoves =num_standard_moves;
 		num_moves=num_standard_moves;		
 		for (int i = 0; i < num_standard_moves; ++i) {
-		int currenty1 = standard_moves[i][0];
-		int currentx1 = standard_moves[i][1];
-		int currenty2 = standard_moves[i][2];
-		int currentx2 = standard_moves[i][3];
+		int currentx1 = standard_moves[i][0];
+		int currenty1 = standard_moves[i][1];
+		int currentx2 = standard_moves[i][2];
+		int currenty2 = standard_moves[i][3];
 		
-		possibleMoves[i][0]=currenty1;
-		possibleMoves[i][1]=currentx1; 
-		possibleMoves[i][2]=currenty2;
-		possibleMoves[i][3]=currentx2;
+		possibleMoves[i][0]=currentx1;
+		possibleMoves[i][1]=currenty1; 
+		possibleMoves[i][2]=currentx2;
+		possibleMoves[i][3]=currenty2;
 		}//for
 	}//else standard move
 		
@@ -959,7 +959,7 @@ bool can_capture(int board[BOARD_SIZE][BOARD_SIZE], int x, int y, int *x_cap, in
                   board[x+1][y+1] == BKING)&&
                   board[x+2][y+2] == EMPTY){               
                  *x_cap =x+2;
-                *y_cap =y+2;                
+                 *y_cap =y+2;                
                 return TRUE;
 			}//if
 		}
@@ -1109,9 +1109,10 @@ void get_possible_moves(int board[BOARD_SIZE][BOARD_SIZE], int turn, int possibl
 void get_best_move_AI(int board[BOARD_SIZE][BOARD_SIZE], int turn, int maxDepth, int* x1, int* y1, int* x2, int* y2) 
 {
 	// get move possible moves
+	//get_best_move_AI
 	int moves[100][4];
 	int numMoves = 0;
-	get_possible_moves(board, turn, moves, &numMoves);
+	get_possible_moves(board, PLAYER2, moves, &numMoves);
 	
 	int bestScore = -9999;	
 	int bestMoveIndex = 0;
@@ -1127,9 +1128,8 @@ void get_best_move_AI(int board[BOARD_SIZE][BOARD_SIZE], int turn, int maxDepth,
 	copy_board(board, boardCopy);	
 	//make_move(boardCopy, turn, currentx1, currenty1, currentx2, currenty2);
 	make_move(boardCopy, currentx1, currenty1, currentx2, currenty2);
-	//if PLAYER2 then minimax PLAYER1 to get their best moves
-	int score = minimax_jumps(boardCopy, maxDepth, 0, PLAYER1, -9999, 9999); //player 1
-	//int score = minimax(boardCopy, maxDepth, 0, PLAYER2, -9999, 9999); //player 1
+	int score = minimax_jumps(boardCopy, maxDepth, 0, PLAYER1, -9999, 9999); //player2 AI
+	
 	if (score > bestScore) {
 	bestScore = score;
 	bestMoveIndex = i;
